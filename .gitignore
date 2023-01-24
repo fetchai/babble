@@ -1,0 +1,4 @@
+*.py[cgo]
+__pycache__
+
+.idea/
