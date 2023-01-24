@@ -12,48 +12,54 @@ def _from_js_date(value: int) -> datetime:
 
 
 def _execute(query: str, *, token: str, variables: Optional[Dict[str, Any]] = None):
-    payload = {
-        'query': query,
-        'variables': variables
-    }
+    payload = {"query": query, "variables": variables}
 
     # make the request
-    r = requests.post(f'{MEMORANDUM_SERVER}/graphql', json=payload, headers={
-        'authorization': f'bearer {token}',
-    })
+    r = requests.post(
+        f"{MEMORANDUM_SERVER}/graphql",
+        json=payload,
+        headers={
+            "authorization": f"bearer {token}",
+        },
+    )
     r.raise_for_status()
 
     return r.json()
 
 
 def lookup_messaging_public_key(token: str, address: str) -> Optional[str]:
-    resp = _execute("""
+    resp = _execute(
+        """
     query Query($address: String!) {
       publicKey(address: $address, channelId: MESSAGING) {
         publicKey
       }
     }
-    """, variables={'address': address}, token=token)
+    """,
+        variables={"address": address},
+        token=token,
+    )
 
-    data = resp['data']['publicKey']
+    data = resp["data"]["publicKey"]
     if data is None:
         return None
 
-    return data['publicKey']
+    return data["publicKey"]
 
 
 def register_messaging_public_key(token: str, address: str, public_key: str):
     variables = {
-        'publicKeyDetails': {
-            'publicKey': public_key,
-            'address': address,
-            'channelId': 'MESSAGING',
-            'privacySetting': 'EVERYBODY',
-            'readReceipt': False,
+        "publicKeyDetails": {
+            "publicKey": public_key,
+            "address": address,
+            "channelId": "MESSAGING",
+            "privacySetting": "EVERYBODY",
+            "readReceipt": False,
         }
     }
 
-    _execute("""
+    _execute(
+        """
     mutation Mutation($publicKeyDetails: InputPublicKey!) {
       updatePublicKey(publicKeyDetails: $publicKeyDetails) {
         publicKey
@@ -61,20 +67,24 @@ def register_messaging_public_key(token: str, address: str, public_key: str):
         readReceipt
       }
     }
-    """, variables=variables, token=token)
+    """,
+        variables=variables,
+        token=token,
+    )
 
 
 def dispatch_messages(token: str, messages: List[str]):
     variables = {
-        'messages': list(
+        "messages": list(
             map(
-                lambda x: {'contents': x},
+                lambda x: {"contents": x},
                 messages,
             )
         )
     }
 
-    _execute("""
+    _execute(
+        """
     mutation Mutation($messages: [InputMessage!]!) {
       dispatchMessages(messages: $messages) {
         id
@@ -85,7 +95,10 @@ def dispatch_messages(token: str, messages: List[str]):
         commitTimestamp
       }
     }
-    """, variables=variables, token=token)
+    """,
+        variables=variables,
+        token=token,
+    )
 
 
 @dataclass
@@ -100,7 +113,8 @@ class RawMessage:
 
 
 def list_messages(token: str) -> List[RawMessage]:
-    resp = _execute("""
+    resp = _execute(
+        """
     query Messages {
       mailbox {
         messages {
@@ -114,23 +128,25 @@ def list_messages(token: str) -> List[RawMessage]:
         }
       }
     }
-    """, token=token)
+    """,
+        token=token,
+    )
 
     def extract_message(data) -> RawMessage:
         return RawMessage(
-            id=data['id'],
-            group_id=data['groupId'],
-            sender=data['sender'],
-            target=data['target'],
-            contents=data['contents'],
-            sent_at=_from_js_date(data['commitTimestamp']),
-            expires_at=_from_js_date(data['expiryTimestamp']),
+            id=data["id"],
+            group_id=data["groupId"],
+            sender=data["sender"],
+            target=data["target"],
+            contents=data["contents"],
+            sent_at=_from_js_date(data["commitTimestamp"]),
+            expires_at=_from_js_date(data["expiryTimestamp"]),
         )
 
     messages = list(
         map(
             extract_message,
-            resp['data']['mailbox']['messages'],
+            resp["data"]["mailbox"]["messages"],
         )
     )
 
@@ -143,13 +159,17 @@ def drop_messages(token: str, ids: List[str]):
         return
 
     variables = {
-        'ids': ids,
+        "ids": ids,
     }
 
-    resp = _execute("""
+    resp = _execute(
+        """
     mutation Mutation($ids: [ID!]!) {
       dropMessages(ids: $ids) {
         id
       }
     }
-    """, variables=variables, token=token)
+    """,
+        variables=variables,
+        token=token,
+    )

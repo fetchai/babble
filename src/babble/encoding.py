@@ -4,7 +4,7 @@ import json
 
 
 def to_json(data: Any) -> str:
-    return json.dumps(data, sort_keys=True, separators=(',', ':'))
+    return json.dumps(data, sort_keys=True, separators=(",", ":"))
 
 
 def from_json(data: Union[bytes, str]) -> Any:

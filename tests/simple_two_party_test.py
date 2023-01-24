@@ -7,8 +7,8 @@ from babble import Client, Identity
 def create_client(seed: str) -> Client:
     from babble.crypto.identity import _to_bech32
 
-    agent_key = hashlib.sha3_384(seed.encode() + b'an-agent-address').digest()[:33]
-    delegate_address = _to_bech32('agent', agent_key)
+    agent_key = hashlib.sha3_384(seed.encode() + b"an-agent-address").digest()[:33]
+    delegate_address = _to_bech32("agent", agent_key)
 
     identity = Identity.from_seed(seed)
 
@@ -17,11 +17,11 @@ def create_client(seed: str) -> Client:
 
 def test_simple_interaction():
     # create out clients
-    user1 = Identity.from_seed('the wise mans fear')
-    user2 = Identity.from_seed('the name of the wind')
+    user1 = Identity.from_seed("the wise mans fear")
+    user2 = Identity.from_seed("the name of the wind")
 
-    msg1 = b'All the truth in the world is held in stories.'
-    msg2 = b'Caution suits an arcanist. Assurance suits a namer. Fear does not suit either. It does not suit you'
+    msg1 = b"All the truth in the world is held in stories."
+    msg2 = b"Caution suits an arcanist. Assurance suits a namer. Fear does not suit either. It does not suit you"
 
     data = Identity.encrypt_message(user2.public_key, msg1)
     recovered = user2.decrypt_message(data)

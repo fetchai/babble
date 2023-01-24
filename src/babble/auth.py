@@ -18,36 +18,44 @@ class TokenMetadata:
 
 
 def authenticate(identity: Identity) -> Tuple[str, TokenMetadata]:
-    r = requests.post(f'{AUTH_SERVER}/request_token', json={
-        'address': identity.address,
-        'public_key': identity.public_key,
-    })
+    r = requests.post(
+        f"{AUTH_SERVER}/request_token",
+        json={
+            "address": identity.address,
+            "public_key": identity.public_key,
+        },
+    )
     r.raise_for_status()
 
-    payload = r.json()['payload']
+    payload = r.json()["payload"]
 
     # create the signature
     signed_bytes, signature = identity.sign_arbitrary(payload.encode())
 
-    r = requests.post(f'{AUTH_SERVER}/login', json={
-        'public_key': identity.public_key,
-        'signed_bytes': signed_bytes,
-        'signature': signature,
-    })
+    r = requests.post(
+        f"{AUTH_SERVER}/login",
+        json={
+            "public_key": identity.public_key,
+            "signed_bytes": signed_bytes,
+            "signature": signature,
+        },
+    )
     r.raise_for_status()
 
     # extract the token
-    token = str(r.json()['token'])
+    token = str(r.json()["token"])
 
     # parse the token
-    token_data = jwt.decode(token, algorithms=["RS*"], options={'verify_signature': False})
+    token_data = jwt.decode(
+        token, algorithms=["RS*"], options={"verify_signature": False}
+    )
 
     # build the token metadata
     metadata = TokenMetadata(
-        address=str(token_data['name']),
-        public_key=str(token_data['pubkey']),
-        issued_at=datetime.fromtimestamp(token_data['iat'], timezone.utc),
-        expires_at=datetime.fromtimestamp(token_data['exp'], timezone.utc),
+        address=str(token_data["name"]),
+        public_key=str(token_data["pubkey"]),
+        issued_at=datetime.fromtimestamp(token_data["iat"], timezone.utc),
+        expires_at=datetime.fromtimestamp(token_data["exp"], timezone.utc),
     )
 
     assert metadata.address == identity.address

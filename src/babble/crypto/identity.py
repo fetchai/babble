@@ -22,24 +22,26 @@ def _to_bech32(prefix: str, data: bytes) -> str:
 
 
 def _compute_address(sk: ecdsa.SigningKey) -> Tuple[str, str]:
-    public_key = sk.get_verifying_key().to_string('compressed')
+    public_key = sk.get_verifying_key().to_string("compressed")
     raw_address = ripemd160(sha256(public_key))
-    return _to_bech32('fetch', raw_address), public_key.hex()
+    return _to_bech32("fetch", raw_address), public_key.hex()
 
 
 class Identity:
     @staticmethod
-    def from_seed(text: str) -> 'Identity':
+    def from_seed(text: str) -> "Identity":
         private_key_bytes = sha256(sha256(text.encode()))
         return Identity(private_key_bytes)
 
     @staticmethod
-    def generate() -> 'Identity':
+    def generate() -> "Identity":
         return Identity(os.urandom(32))
 
     def __init__(self, private_key: bytes):
         # build the keys
-        self._sk = ecdsa.SigningKey.from_string(private_key, curve=ecdsa.SECP256k1, hashfunc=hashlib.sha256)
+        self._sk = ecdsa.SigningKey.from_string(
+            private_key, curve=ecdsa.SECP256k1, hashfunc=hashlib.sha256
+        )
         self._msg_key = PrivateKey(private_key)
 
         # compute the derived pieces of the identity
@@ -58,26 +60,28 @@ class Identity:
     def sign_arbitrary(self, data: bytes) -> Tuple[str, str]:
         # create the sign doc
         sign_doc = {
-            'chain_id': "",
-            'account_number': "0",
-            'sequence': "0",
-            'fee': {
-                'gas': "0",
-                'amount': [],
+            "chain_id": "",
+            "account_number": "0",
+            "sequence": "0",
+            "fee": {
+                "gas": "0",
+                "amount": [],
             },
-            'msgs': [
+            "msgs": [
                 {
-                    'type': "sign/MsgSignData",
-                    'value': {
-                        'signer': self.address,
-                        'data': base64.b64encode(data).decode()
+                    "type": "sign/MsgSignData",
+                    "value": {
+                        "signer": self.address,
+                        "data": base64.b64encode(data).decode(),
                     },
                 },
             ],
-            'memo': '',
+            "memo": "",
         }
 
-        raw_sign_doc = json.dumps(sign_doc, sort_keys=True, separators=(',', ':')).encode()
+        raw_sign_doc = json.dumps(
+            sign_doc, sort_keys=True, separators=(",", ":")
+        ).encode()
         signature = self.sign(raw_sign_doc)
         enc_sign_doc = base64.b64encode(raw_sign_doc).decode()
 
