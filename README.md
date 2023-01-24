@@ -20,7 +20,7 @@ for msg in client2.receive():
 
 ## Developing
 
-**Install dependences**
+**Install dependencies**
 
     poetry install
 
