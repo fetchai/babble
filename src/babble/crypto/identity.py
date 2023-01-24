@@ -2,14 +2,13 @@ import base64
 import hashlib
 import json
 import os
-
-from ecies.utils import PrivateKey
 from typing import Tuple
 
 import bech32
 import ecdsa
-from ecies import encrypt, decrypt
 from ecdsa.util import sigencode_string_canonize
+from ecies import encrypt, decrypt
+from ecies.utils import PrivateKey
 
 from .hashfuncs import sha256, ripemd160
 

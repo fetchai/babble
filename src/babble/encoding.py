@@ -1,6 +1,6 @@
 import base64
-from typing import Union, Any
 import json
+from typing import Union, Any
 
 
 def to_json(data: Any) -> str:
