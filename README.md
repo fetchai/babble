@@ -5,10 +5,11 @@ A simple python library for interacting with the Fetch.ai messaging service (cal
 ## Quick Example
 
 ```python
-from babble import Client
+from babble import Client, Identity
 
-client1 = Client(...)
-client2 = Client(...)
+# create a set of agents with random identities
+client1 = Client('agent1.....', Identity.generate())
+client2 = Client('agent1.....', Identity.generate())
 
 # send a message from one client to another
 client1.send(client2.delegate_address, "why hello there")
