@@ -107,16 +107,18 @@ class Client:
     def receive(self) -> List[Message]:
         output = []
 
+        latest_rx_timestamp = self._last_rx_timestamp
+
         # attempt to decode the messages
         for raw_message in list_messages(self._token):
             if raw_message.target != self.delegate_address:
                 continue
 
-            if raw_message.sent_at < self._last_rx_timestamp:
+            # only retrieve new messages
+            if raw_message.sent_at <= self._last_rx_timestamp:
                 continue
 
-            # update the timestamp filter
-            self._last_rx_timestamp = max(self._last_rx_timestamp, raw_message.sent_at)
+            latest_rx_timestamp = max(latest_rx_timestamp, raw_message.sent_at)
 
             envelope = from_json(from_base64(raw_message.contents))
             payload = from_json(from_base64(envelope["data"]))
@@ -132,6 +134,9 @@ class Client:
                     expires_at=raw_message.expires_at,
                 )
             )
+
+        # update the timestamp filter
+        self._last_rx_timestamp = latest_rx_timestamp
 
         # drop the received messages from the mailbox (not currently supported)
         # drop_messages(self._token, received_msgs)
