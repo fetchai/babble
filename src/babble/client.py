@@ -115,7 +115,7 @@ class Client:
                 continue
 
             # only retrieve new messages
-            if raw_message.sent_at < self._last_rx_timestamp:
+            if raw_message.sent_at <= self._last_rx_timestamp:
                 continue
 
             latest_rx_timestamp = max(latest_rx_timestamp, raw_message.sent_at)
