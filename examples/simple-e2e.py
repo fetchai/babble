@@ -1,23 +1,26 @@
-import hashlib
+import base64
 from datetime import datetime
 
 from babble import Client, Identity
 
 
 def create_client(seed: str) -> Client:
-    from babble.crypto.identity import _to_bech32
-
-    agent_key = hashlib.sha3_384(seed.encode() + b"an-agent-address").digest()[:33]
-    delegate_address = _to_bech32("agent", agent_key)
+    delegate_identity = Identity.from_seed(f"{seed} cool")
+    delegate_address = delegate_identity.address
+    delegate_pubkey = delegate_identity.public_key
+    delegate_pubkey_b64 = base64.b64encode(
+        bytes.fromhex(delegate_pubkey)).decode()
 
     identity = Identity.from_seed(seed)
+    signed_bytes, signature = delegate_identity.sign_arbitrary(
+        identity.public_key.encode())
 
-    return Client(delegate_address, identity)
+    return Client(delegate_address, delegate_pubkey_b64, signature, signed_bytes, identity)
 
 
 # create out clients
-client1 = create_client("the wise mans fear")
-client2 = create_client("the name of the wind")
+client1 = create_client("the wise mans fear none name")
+client2 = create_client("the name of the wind man fear")
 
 # print some debug
 print("Client1", repr(client1))
@@ -32,7 +35,8 @@ client1.send(
 # simulate the reading of the message
 for msg in client2.receive():
     print(f"RX({client2.delegate_address}): {msg.text}")
-    client2.send(client1.delegate_address, "thanks for the message: " + msg.text)
+    client2.send(client1.delegate_address,
+                 "thanks for the message: " + msg.text)
 
 for msg in client1.receive():
     print(f"RX({client1.delegate_address}): {msg.text}")
