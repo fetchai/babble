@@ -41,7 +41,7 @@ class Client:
         identity: Identity,
     ):
         _validate_address(delegate_address)
-        
+
         # identity and delegation
         self._delegate_address = str(delegate_address)
         self._delegate_pubkey = delegate_pubkey
