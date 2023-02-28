@@ -32,11 +32,21 @@ class Message:
 
 
 class Client:
-    def __init__(self, delegate_address: str, identity: Identity):
+    def __init__(
+        self,
+        delegate_address: str,
+        delegate_pubkey: str,
+        signature: str,
+        signed_obj_base64: str,
+        identity: Identity,
+    ):
         _validate_address(delegate_address)
 
         # identity and delegation
         self._delegate_address = str(delegate_address)
+        self._delegate_pubkey = delegate_pubkey
+        self._signature = signature
+        self._signed_obj_base64 = signed_obj_base64
         self._identity = identity
 
         # build and restore the delivered set
@@ -152,7 +162,12 @@ class Client:
                 f"Registering {self._delegate_address} to {self._identity.address}..."
             )
             register_messaging_public_key(
-                self._token, self._delegate_address, self._identity.public_key
+                self._token,
+                self._delegate_address,
+                self._identity.public_key,
+                self._delegate_pubkey,
+                self._signature,
+                self._signed_obj_base64,
             )
             print(
                 f"Registering {self._delegate_address} to {self._identity.address}...complete"

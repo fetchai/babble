@@ -47,7 +47,14 @@ def lookup_messaging_public_key(token: str, address: str) -> Optional[str]:
     return data["publicKey"]
 
 
-def register_messaging_public_key(token: str, address: str, public_key: str):
+def register_messaging_public_key(
+    token: str,
+    address: str,
+    public_key: str,
+    signing_pubkey: str,
+    signature: str,
+    signed_obj_base64: str,
+):
     variables = {
         "publicKeyDetails": {
             "publicKey": public_key,
@@ -55,6 +62,9 @@ def register_messaging_public_key(token: str, address: str, public_key: str):
             "channelId": "MESSAGING",
             "privacySetting": "EVERYBODY",
             "readReceipt": False,
+            "signingPubKey": signing_pubkey,
+            "signature": signature,
+            "signedObjBase64": signed_obj_base64,
         }
     }
 
