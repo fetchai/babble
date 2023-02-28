@@ -77,7 +77,7 @@ class Client:
             "target": target_public_key,  # public key (hex)
             "groupLastSeenTimestamp": now,
             "lastSeenTimestamp": now,
-            "type": msg_type,  # 1 for private message, 2 for transaction data
+            "type": msg_type,  # 1 for text message, 2 for transaction data
             "content": {
                 "text": message,
             },
