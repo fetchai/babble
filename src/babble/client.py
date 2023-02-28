@@ -65,7 +65,7 @@ class Client:
     def delegate_address(self) -> str:
         return self._delegate_address
 
-    def send(self, target_address: str, message: str):
+    def send(self, target_address: str, message: str, msg_type: int=1):
         target_public_key = lookup_messaging_public_key(self._token, target_address)
         if target_public_key is None:
             raise RoutingError(f"Unable to route to {target_address}")
@@ -77,7 +77,7 @@ class Client:
             "target": target_public_key,  # public key (hex)
             "groupLastSeenTimestamp": now,
             "lastSeenTimestamp": now,
-            "type": 1,  # private message
+            "type": msg_type,  # 1 for private message, 2 for transaction data
             "content": {
                 "text": message,
             },
