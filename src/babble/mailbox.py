@@ -53,7 +53,7 @@ def register_messaging_public_key(
     public_key: str,
     signing_pubkey: str,
     signature: str,
-    signed_obj_base64: str
+    signed_obj_base64: str,
 ):
     variables = {
         "publicKeyDetails": {

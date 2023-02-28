@@ -38,10 +38,10 @@ class Client:
         delegate_pubkey: str,
         signature: str,
         signed_obj_base64: str,
-        identity: Identity
+        identity: Identity,
     ):
         _validate_address(delegate_address)
-
+        
         # identity and delegation
         self._delegate_address = str(delegate_address)
         self._delegate_pubkey = delegate_pubkey
@@ -66,8 +66,7 @@ class Client:
         return self._delegate_address
 
     def send(self, target_address: str, message: str):
-        target_public_key = lookup_messaging_public_key(
-            self._token, target_address)
+        target_public_key = lookup_messaging_public_key(self._token, target_address)
         if target_public_key is None:
             raise RoutingError(f"Unable to route to {target_address}")
 
@@ -87,10 +86,8 @@ class Client:
         raw_message = to_json(message).encode()
 
         # encrypt each part?
-        sender_cipher = Identity.encrypt_message(
-            self._identity.public_key, raw_message)
-        target_cipher = Identity.encrypt_message(
-            target_public_key, raw_message)
+        sender_cipher = Identity.encrypt_message(self._identity.public_key, raw_message)
+        target_cipher = Identity.encrypt_message(target_public_key, raw_message)
 
         # JSON + Base64
         payload = to_json(
@@ -136,8 +133,7 @@ class Client:
             envelope = from_json(from_base64(raw_message.contents))
             payload = from_json(from_base64(envelope["data"]))
             encrypted_message = from_base64(payload["encryptedTargetData"])
-            message = from_json(
-                self._identity.decrypt_message(encrypted_message))
+            message = from_json(self._identity.decrypt_message(encrypted_message))
 
             output.append(
                 Message(
@@ -171,7 +167,7 @@ class Client:
                 self._identity.public_key,
                 self._delegate_pubkey,
                 self._signature,
-                self._signed_obj_base64
+                self._signed_obj_base64,
             )
             print(
                 f"Registering {self._delegate_address} to {self._identity.address}...complete"
