@@ -65,7 +65,7 @@ class Client:
     def delegate_address(self) -> str:
         return self._delegate_address
 
-    def send(self, target_address: str, message: str, msg_type: int=1):
+    def send(self, target_address: str, message: str, msg_type: int = 1):
         target_public_key = lookup_messaging_public_key(self._token, target_address)
         if target_public_key is None:
             raise RoutingError(f"Unable to route to {target_address}")
