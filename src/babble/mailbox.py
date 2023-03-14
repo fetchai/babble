@@ -27,16 +27,16 @@ def _execute(query: str, *, token: str, variables: Optional[Dict[str, Any]] = No
     return r.json()
 
 
-def lookup_messaging_public_key(token: str, address: str) -> Optional[str]:
+def lookup_messaging_public_key(token: str, address: str, chain_id: str) -> Optional[str]:
     resp = _execute(
         """
-    query Query($address: String!) {
-      publicKey(address: $address, channelId: MESSAGING) {
+    query Query($address: String!, $chainId: String!) {
+      publicKey(address: $address, channelId: MESSAGING, chainId: $chainId) {
         publicKey
       }
     }
     """,
-        variables={"address": address},
+        variables={"address": address, "chainId": chain_id},
         token=token,
     )
 
@@ -54,12 +54,14 @@ def register_messaging_public_key(
     signing_pubkey: str,
     signature: str,
     signed_obj_base64: str,
+    chain_id: str,
 ):
     variables = {
         "publicKeyDetails": {
             "publicKey": public_key,
             "address": address,
             "channelId": "MESSAGING",
+            "chainId": chain_id,
             "privacySetting": "EVERYBODY",
             "readReceipt": False,
             "signingPubKey": signing_pubkey,

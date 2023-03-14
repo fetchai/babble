@@ -39,6 +39,7 @@ class Client:
         signature: str,
         signed_obj_base64: str,
         identity: Identity,
+        chain_id: str,
     ):
         _validate_address(delegate_address)
 
@@ -48,6 +49,7 @@ class Client:
         self._signature = signature
         self._signed_obj_base64 = signed_obj_base64
         self._identity = identity
+        self._chain_id = chain_id
 
         # build and restore the delivered set
         self._last_rx_timestamp = self._now()
@@ -66,7 +68,7 @@ class Client:
         return self._delegate_address
 
     def send(self, target_address: str, message: str, msg_type: int = 1):
-        target_public_key = lookup_messaging_public_key(self._token, target_address)
+        target_public_key = lookup_messaging_public_key(self._token, target_address, self._chain_id)
         if target_public_key is None:
             raise RoutingError(f"Unable to route to {target_address}")
 
@@ -155,7 +157,7 @@ class Client:
 
     def _update_registration(self):
         registered_pub_key = lookup_messaging_public_key(
-            self._token, self._delegate_address
+            self._token, self._delegate_address, self._chain_id
         )
         if registered_pub_key != self._identity.public_key:
             print(
@@ -168,6 +170,7 @@ class Client:
                 self._delegate_pubkey,
                 self._signature,
                 self._signed_obj_base64,
+                self._chain_id,
             )
             print(
                 f"Registering {self._delegate_address} to {self._identity.address}...complete"
