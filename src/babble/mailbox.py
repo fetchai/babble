@@ -27,7 +27,9 @@ def _execute(query: str, *, token: str, variables: Optional[Dict[str, Any]] = No
     return r.json()
 
 
-def lookup_messaging_public_key(token: str, address: str, chain_id: str) -> Optional[str]:
+def lookup_messaging_public_key(
+    token: str, address: str, chain_id: str
+) -> Optional[str]:
     resp = _execute(
         """
     query Query($address: String!, $chainId: String!) {
