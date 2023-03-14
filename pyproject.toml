@@ -1,10 +1,11 @@
 [tool.poetry]
-name = "babble"
+name = "fetchai-babble"
 version = "0.1.0"
 description = "A simple python library for interacting with the Fetch.ai messaging service (called Memorandum)"
 authors = ["Fetch.AI Limited"]
 license = "Apache 2.0"
 readme = "README.md"
+packages = [{ include = "src/babble" } ]
 
 [tool.poetry.dependencies]
 python = "^3.7"
