@@ -24,6 +24,7 @@ def _validate_address(address: str):
 
 @dataclass
 class Message:
+    id: str
     sender: str
     target: str
     text: str
@@ -141,6 +142,7 @@ class Client:
 
             output.append(
                 Message(
+                    id=raw_message.id,
                     sender=raw_message.sender,
                     target=raw_message.target,
                     text=message["content"]["text"],
