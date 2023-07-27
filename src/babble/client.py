@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import List
 
 import bech32
@@ -14,6 +14,8 @@ from .mailbox import (
     dispatch_messages,
     list_messages,
 )
+
+EXPIRATION_BUFFER_SECONDS = 60 * 5  # 5 minutes
 
 
 def _validate_address(address: str):
@@ -56,10 +58,19 @@ class Client:
         self._last_rx_timestamp = self._now()
 
         # authenticate against the API
-        self._token, self._token_metadata = authenticate(self._identity)
+        self._token = None
+        self._update_authentication()
 
         # ensure the registration is in place
         self._update_registration()
+
+    def _update_authentication(self):
+        if (
+            self._token is None
+            or self._token_metadata.expires_at
+            < self._now() - timedelta(seconds=EXPIRATION_BUFFER_SECONDS)
+        ):
+            self._token, self._token_metadata = authenticate(self._identity)
 
     def __repr__(self):
         return f"{self._delegate_address}  ({self._identity.public_key})"
@@ -69,6 +80,8 @@ class Client:
         return self._delegate_address
 
     def send(self, target_address: str, message: str, msg_type: int = 1):
+        self._update_authentication()
+
         target_public_key = lookup_messaging_public_key(
             self._token, target_address, self._chain_id
         )
@@ -120,6 +133,8 @@ class Client:
         dispatch_messages(self._token, [enc_envelope])
 
     def receive(self) -> List[Message]:
+        self._update_authentication()
+
         output = []
 
         latest_rx_timestamp = self._last_rx_timestamp
