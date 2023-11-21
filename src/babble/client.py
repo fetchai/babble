@@ -43,6 +43,7 @@ class Client:
         signed_obj_base64: str,
         identity: Identity,
         chain_id: str,
+        name: str = None,
     ):
         _validate_address(delegate_address)
 
@@ -53,6 +54,7 @@ class Client:
         self._signed_obj_base64 = signed_obj_base64
         self._identity = identity
         self._chain_id = chain_id
+        self._name = name
 
         # build and restore the delivered set
         self._last_rx_timestamp = self._now()
@@ -70,7 +72,7 @@ class Client:
             or self._token_metadata.expires_at
             < self._now() - timedelta(seconds=EXPIRATION_BUFFER_SECONDS)
         ):
-            self._token, self._token_metadata = authenticate(self._identity)
+            self._token, self._token_metadata = authenticate(self._identity, self._name)
 
     def __repr__(self):
         return f"{self._delegate_address}  ({self._identity.public_key})"

@@ -1,7 +1,7 @@
 import os
 
 AUTH_SERVER = os.environ.get(
-    "AUTH_SERVER", "https://auth-attila.sandbox-london-b.fetch-ai.com"
+    "AUTH_SERVER", "https://accounts.fetch.ai/v1"
 )
 MEMORANDUM_SERVER = os.environ.get(
     "MEMORANDUM_SERVER",
