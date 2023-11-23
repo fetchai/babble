@@ -9,6 +9,7 @@ from .config import AUTH_SERVER
 from .crypto.identity import Identity
 from .encoding import to_base64, from_base64
 
+
 @dataclass
 class TokenMetadata:
     address: str
@@ -63,7 +64,10 @@ def authenticate(identity: Identity, name: str = None) -> Tuple[str, TokenMetada
 
     # parse the token
     token_data = jwt.decode(
-        token, algorithms=["RS*"], options={"verify_signature": False}, issuer="fetch.ai"
+        token,
+        algorithms=["RS*"],
+        options={"verify_signature": False},
+        issuer="fetch.ai",
     )
 
     # build the token metadata
