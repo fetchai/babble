@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Tuple
+from typing import Optional, Tuple
 
 import jwt
 import requests
@@ -18,17 +18,27 @@ class TokenMetadata:
     expires_at: datetime
 
 
+def send_post_request(url: str, data: dict) -> Optional[dict]:
+    """Send a POST request to the given URL with the given data."""
+    try:
+        response = requests.post(url, json=data, timeout=DEFAULT_REQUEST_TIMEOUT)
+        return response.json()
+    except requests.exceptions.RequestException as err:
+        print(f"Error: {err}")
+        return None
+
+
 def authenticate(identity: Identity, name: str = None) -> Tuple[str, TokenMetadata]:
-    r = requests.post(
+    """Authenticate the given identity and return the token and metadata."""
+    resp = send_post_request(
         f"{AUTH_SERVER}/auth/login/wallet/challenge",
-        json={
+        {
             "address": identity.address,
             "client_id": name if name else "uagent",
         },
-        timeout=DEFAULT_REQUEST_TIMEOUT,
     )
-    r.raise_for_status()
-    resp = r.json()
+    if not resp or "challenge" not in resp or "nonce" not in resp:
+        return None, None
 
     payload = resp["challenge"]
 
@@ -48,22 +58,18 @@ def authenticate(identity: Identity, name: str = None) -> Tuple[str, TokenMetada
         "scope": "",
     }
 
-    r = requests.post(
-        f"{AUTH_SERVER}/auth/login/wallet/verify",
-        json=login_request,
-        timeout=DEFAULT_REQUEST_TIMEOUT,
+    login_resp = send_post_request(
+        f"{AUTH_SERVER}/auth/login/wallet/verify", login_request
     )
-    r.raise_for_status()
+    if not login_resp or "access_token" not in login_resp:
+        return None, None
 
-    r = requests.post(
-        f"{AUTH_SERVER}/tokens",
-        json=r.json(),
-        timeout=DEFAULT_REQUEST_TIMEOUT,
-    )
-    r.raise_for_status()
+    token_resp = send_post_request(f"{AUTH_SERVER}/tokens", login_resp)
+    if not token_resp or "access_token" not in token_resp:
+        return None, None
 
     # extract the token
-    token = str(r.json()["access_token"])
+    token = str(token_resp["access_token"])
 
     # parse the token
     token_data = jwt.decode(
@@ -81,7 +87,10 @@ def authenticate(identity: Identity, name: str = None) -> Tuple[str, TokenMetada
         expires_at=datetime.fromtimestamp(token_data["exp"], timezone.utc),
     )
 
-    assert metadata.address == identity.address
-    assert metadata.public_key == identity.public_key
+    if (
+        not metadata.address == identity.address
+        or not metadata.public_key == identity.public_key
+    ):
+        return None, None
 
     return token, metadata

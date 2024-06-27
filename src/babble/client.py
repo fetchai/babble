@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List
 
 import bech32
@@ -7,12 +7,12 @@ import bech32
 from .auth import authenticate
 from .crypto.exceptions import RoutingError
 from .crypto.identity import Identity
-from .encoding import to_json, to_base64, from_base64, from_json
+from .encoding import from_base64, from_json, to_base64, to_json
 from .mailbox import (
-    lookup_messaging_public_key,
-    register_messaging_public_key,
     dispatch_messages,
     list_messages,
+    lookup_messaging_public_key,
+    register_messaging_public_key,
 )
 
 EXPIRATION_BUFFER_SECONDS = 60 * 5  # 5 minutes
@@ -61,6 +61,7 @@ class Client:
 
         # authenticate against the API
         self._token = None
+        self._token_metadata = {"expires_at": self._now()}
         self._update_authentication()
 
         # ensure the registration is in place
@@ -73,6 +74,8 @@ class Client:
             < self._now() - timedelta(seconds=EXPIRATION_BUFFER_SECONDS)
         ):
             self._token, self._token_metadata = authenticate(self._identity, self._name)
+            if not self._token or not self._token_metadata:
+                raise ValueError("Failed to authenticate")
 
     def __repr__(self):
         return f"{self._delegate_address}  ({self._identity.public_key})"
