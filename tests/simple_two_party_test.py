@@ -1,7 +1,6 @@
 import hashlib
 
 import pytest
-
 from babble import Client, Identity
 
 
@@ -17,7 +16,7 @@ def create_client(seed: str) -> Client:
 
 
 def test_simple_interaction():
-    # create out clients
+    # create clients
     user1 = Identity.from_seed("the wise mans fear")
     user2 = Identity.from_seed("the name of the wind")
 

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional
 
 import requests
 
@@ -21,6 +21,7 @@ def _execute(query: str, *, token: str, variables: Optional[Dict[str, Any]] = No
         headers={
             "authorization": f"bearer {token}",
         },
+        timeout=30,
     )
     r.raise_for_status()
 
@@ -176,7 +177,7 @@ def drop_messages(token: str, ids: List[str]):
         "ids": ids,
     }
 
-    resp = _execute(
+    _ = _execute(
         """
     mutation Mutation($ids: [ID!]!) {
       dropMessages(ids: $ids) {

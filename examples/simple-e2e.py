@@ -1,5 +1,5 @@
 import base64
-from datetime import datetime
+from datetime import datetime, timezone
 
 from babble import Client, Identity
 
@@ -47,7 +47,8 @@ print()
 
 # start sending of a message
 client1.send(
-    client2.delegate_address, "why hello there " + datetime.utcnow().isoformat()
+    client2.delegate_address,
+    "why hello there " + datetime.now(timezone.utc).isoformat(),
 )
 
 # simulate the reading of the message
