@@ -36,7 +36,7 @@ class TestInteraction(unittest.TestCase):
         client1 = create_client(CLIENT_1_SEED, MAINNET_CHAIN_ID)
         client2 = create_client(CLIENT_2_SEED, MAINNET_CHAIN_ID)
 
-        message = "why hello there " + datetime.now(timezone.utc).isoformat()
+        message = "now: " + datetime.now(timezone.utc).isoformat()
 
         client1.send(client2.delegate_address, message)
 
@@ -51,7 +51,7 @@ class TestInteraction(unittest.TestCase):
         client1_dorado = create_client(CLIENT_1_SEED, TESTNET_CHAIN_ID)
         client2_dorado = create_client(CLIENT_2_SEED, TESTNET_CHAIN_ID)
 
-        message = "why hello there on dorado" + datetime.now(timezone.utc).isoformat()
+        message = "now on dorado: " + datetime.now(timezone.utc).isoformat()
 
         client1_dorado.send(client2_dorado.delegate_address, message)
 

@@ -40,7 +40,7 @@ def authenticate(identity: Identity, name: str = None) -> Tuple[str, TokenMetada
     if not resp or "challenge" not in resp or "nonce" not in resp:
         return None, None
 
-    payload = resp["challenge"]
+    payload: str = resp["challenge"]
 
     # create the signature
     _, signature = identity.sign_arbitrary(payload.encode())
@@ -61,7 +61,7 @@ def authenticate(identity: Identity, name: str = None) -> Tuple[str, TokenMetada
     login_resp = send_post_request(
         f"{AUTH_SERVER}/auth/login/wallet/verify", login_request
     )
-    if not login_resp or "access_token" not in login_resp:
+    if not login_resp:
         return None, None
 
     token_resp = send_post_request(f"{AUTH_SERVER}/tokens", login_resp)
