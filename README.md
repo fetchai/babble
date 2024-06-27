@@ -1,3 +1,5 @@
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
 # Babble
 
 A simple python library for interacting with the Fetch.ai messaging service (called Memorandum)
@@ -35,4 +37,4 @@ for msg in client2.receive():
 
 **Run formatter**
 
-    poetry run black .
+    poetry run ruff check --fix && ruff format

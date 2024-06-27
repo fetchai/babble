@@ -19,7 +19,8 @@ eciespy = "^0.4.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
-black = "24.4.2"
+tomli = "^2.0.1"
+ruff = "^0.4.10"
 
 [build-system]
 requires = ["poetry-core"]
