@@ -1,6 +1,5 @@
 import base64
 import unittest
-from datetime import datetime, timezone
 
 from babble.client import Client
 from babble.config import MAINNET_CHAIN_ID, TESTNET_CHAIN_ID
@@ -36,7 +35,7 @@ class TestInteraction(unittest.TestCase):
         client1 = create_client(CLIENT_1_SEED, MAINNET_CHAIN_ID)
         client2 = create_client(CLIENT_2_SEED, MAINNET_CHAIN_ID)
 
-        message = "now: " + datetime.now(timezone.utc).isoformat()
+        message = "test message"
 
         client1.send(client2.delegate_address, message)
 
@@ -51,7 +50,7 @@ class TestInteraction(unittest.TestCase):
         client1_dorado = create_client(CLIENT_1_SEED, TESTNET_CHAIN_ID)
         client2_dorado = create_client(CLIENT_2_SEED, TESTNET_CHAIN_ID)
 
-        message = "now on dorado: " + datetime.now(timezone.utc).isoformat()
+        message = "test message on dorado"
 
         client1_dorado.send(client2_dorado.delegate_address, message)
 
