@@ -5,9 +5,9 @@ from typing import Tuple
 import jwt
 import requests
 
-from .config import AUTH_SERVER
+from .config import AUTH_SERVER, DEFAULT_REQUEST_TIMEOUT
 from .crypto.identity import Identity
-from .encoding import to_base64, from_base64
+from .encoding import from_base64, to_base64
 
 
 @dataclass
@@ -25,6 +25,7 @@ def authenticate(identity: Identity, name: str = None) -> Tuple[str, TokenMetada
             "address": identity.address,
             "client_id": name if name else "uagent",
         },
+        timeout=DEFAULT_REQUEST_TIMEOUT,
     )
     r.raise_for_status()
     resp = r.json()
@@ -50,12 +51,14 @@ def authenticate(identity: Identity, name: str = None) -> Tuple[str, TokenMetada
     r = requests.post(
         f"{AUTH_SERVER}/auth/login/wallet/verify",
         json=login_request,
+        timeout=DEFAULT_REQUEST_TIMEOUT,
     )
     r.raise_for_status()
 
     r = requests.post(
         f"{AUTH_SERVER}/tokens",
         json=r.json(),
+        timeout=DEFAULT_REQUEST_TIMEOUT,
     )
     r.raise_for_status()
 

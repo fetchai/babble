@@ -8,7 +8,6 @@ from pathlib import Path
 import tomli
 from packaging.version import Version
 
-
 ROOT = Path(__file__).parent.parent
 
 
@@ -27,7 +26,7 @@ class EnvCredentials:
 
 
 def get_the_latest_release_version() -> Version:
-    """Get release version from gihtub tags."""
+    """Get release version from github tags."""
     text = subprocess.check_output("git ls-remote --tags origin", shell=True, text=True)
     tags = [i.split("\t")[1].strip() for i in text.splitlines()]
     tags = [i for i in tags if i.startswith("refs/tags/v") and not i.endswith("^{}")]
@@ -93,7 +92,7 @@ class ReleaseTool:
             stderr=sys.stderr,
         )
         if result.returncode != 0:
-            raise RuntimeError("Upload pacakges failed!")
+            raise RuntimeError("Upload packages failed!")
 
     def main(self):
         """Run release process."""

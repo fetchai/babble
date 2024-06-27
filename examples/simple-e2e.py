@@ -13,7 +13,7 @@ def create_client(seed: str, chain_id: str = MAINNET_CHAIN_ID) -> Client:
     delegate_pubkey = delegate_identity.public_key
     delegate_pubkey_b64 = base64.b64encode(bytes.fromhex(delegate_pubkey)).decode()
 
-    # Important: Messaging ublic key to be registered should be different even though delegate address can be same.
+    # Important: Messaging public key to be registered should be different even though delegate address can be same.
     identity = Identity.from_seed(f"{seed} {chain_id}")
     signed_bytes, signature = delegate_identity.sign_arbitrary(
         identity.public_key.encode()
@@ -62,7 +62,7 @@ for msg in client1.receive():
 
 client1_dorado.send(
     client2_dorado.delegate_address,
-    "why hello there on dorado" + datetime.utcnow().isoformat(),
+    "why hello there on dorado" + datetime.now(timezone.utc).isoformat(),
 )
 
 for msg in client2_dorado.receive():
