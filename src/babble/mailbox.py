@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional
 
 import requests
 
-from .config import DEFAULT_REQUEST_TIMEOUT, MEMORANDUM_SERVER
+from .config import MEMORANDUM_SERVER
 
 
 def _from_js_date(value: int) -> datetime:
@@ -21,7 +21,6 @@ def _execute(query: str, *, token: str, variables: Optional[Dict[str, Any]] = No
         headers={
             "authorization": f"bearer {token}",
         },
-        timeout=DEFAULT_REQUEST_TIMEOUT,
     )
     r.raise_for_status()
 

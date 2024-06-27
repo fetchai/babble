@@ -29,11 +29,11 @@ def create_client(seed: str, chain_id: str = MAINNET_CHAIN_ID) -> Client:
     )
 
 
-# create out clients
+# create clients
 client1 = create_client("the wise mans fear none name")
 client2 = create_client("the name of the wind man fear")
 
-# create out clients with same seed phrase, should not be an issue
+# create clients with same seed phrase, should not be an issue
 client1_dorado = create_client("the wise mans fear none name", TESTNET_CHAIN_ID)
 client2_dorado = create_client("the name of the wind man fear", TESTNET_CHAIN_ID)
 
