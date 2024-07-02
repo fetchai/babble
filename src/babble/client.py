@@ -1,8 +1,8 @@
-from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from typing import List
 
 import bech32
+from pydantic import BaseModel
 
 from .auth import authenticate
 from .crypto.exceptions import RoutingError
@@ -24,8 +24,7 @@ def _validate_address(address: str):
         raise ValueError(f"Bad delegate address {address}")
 
 
-@dataclass
-class Message:
+class Message(BaseModel):
     id: str
     sender: str
     target: str
