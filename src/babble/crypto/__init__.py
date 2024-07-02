@@ -1,1 +1,1 @@
-from .identity import Identity
+from .identity import Identity  # noqa

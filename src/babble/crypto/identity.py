@@ -7,10 +7,9 @@ from typing import Tuple
 import bech32
 import ecdsa
 from ecdsa.util import sigencode_string_canonize
-from ecies import encrypt, decrypt
-from ecies.utils import PrivateKey
+from ecies import PrivateKey, decrypt, encrypt
 
-from .hashfuncs import sha256, ripemd160
+from .hashfuncs import ripemd160, sha256
 
 
 def _to_bech32(prefix: str, data: bytes) -> str:

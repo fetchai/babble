@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional
 
 import requests
 
@@ -176,7 +176,7 @@ def drop_messages(token: str, ids: List[str]):
         "ids": ids,
     }
 
-    resp = _execute(
+    _ = _execute(
         """
     mutation Mutation($ids: [ID!]!) {
       dropMessages(ids: $ids) {
