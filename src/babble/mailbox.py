@@ -1,8 +1,8 @@
-from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 import requests
+from pydantic import BaseModel
 
 from .config import MEMORANDUM_SERVER
 
@@ -115,8 +115,7 @@ def dispatch_messages(token: str, messages: List[str]):
     )
 
 
-@dataclass
-class RawMessage:
+class RawMessage(BaseModel):
     id: str
     group_id: str
     sender: str

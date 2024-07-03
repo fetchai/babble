@@ -1,17 +1,16 @@
-from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Optional, Tuple
 
 import jwt
 import requests
+from pydantic import BaseModel
 
 from .config import AUTH_SERVER, DEFAULT_REQUEST_TIMEOUT
 from .crypto.identity import Identity
 from .encoding import from_base64, to_base64
 
 
-@dataclass
-class TokenMetadata:
+class TokenMetadata(BaseModel):
     address: str
     public_key: str
     issued_at: datetime

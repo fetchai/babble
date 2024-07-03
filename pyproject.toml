@@ -16,6 +16,7 @@ bech32 = "^1.2.0"
 pycryptodome = "^3.20.0"
 pyjwt = "^2.8.0"
 eciespy = "^0.4.2"
+pydantic = "^2.8.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
