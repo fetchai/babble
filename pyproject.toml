@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fetchai-babble"
-version = "0.4.1"
+version = "0.4.2"
 description = "A simple python library for interacting with the Fetch.ai messaging service (called Memorandum)"
 authors = ["Fetch.AI Limited"]
 license = "Apache 2.0"
